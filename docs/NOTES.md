@@ -120,4 +120,14 @@ One line per decision. Future-you and reviewers read this. Newest at the bottom.
 - test_api.py: TestClient smoke test (health, model info, metrics, sample->predict) — no key needed.
 - Run: `PYTHONPATH=src uvicorn routeguard.api:app --reload` ; docs at /docs.
 
+## M9 — Streamlit dashboard
+- Single-process app that imports the pipeline directly (simplest to run + deploy on one
+  process, e.g. HF Spaces). FastAPI stays as the programmatic API.
+- Pages: Home, Prediction (hero: pick order -> probability + SHAP + agent), Model Performance
+  (backtest + metrics + calibration curve), SHAP Explanation (global), System Logs (DB), About.
+- rgutil.py: puts src on path + st.cache_data/cache_resource loaders (features, backtest, SHAP).
+- Verified: all pages render without errors (checked via browser); predict/SHAP/agent logic
+  already proven live via the pipeline. `.claude/launch.json` added for local preview.
+- Run: `streamlit run dashboard/Home.py`
+
 ## (add new decisions below as you build)
