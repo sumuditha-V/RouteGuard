@@ -130,4 +130,14 @@ One line per decision. Future-you and reviewers read this. Newest at the bottom.
   already proven live via the pipeline. `.claude/launch.json` added for local preview.
 - Run: `streamlit run dashboard/Home.py`
 
+## M10/M11 — Polish, docs & deploy
+- Portfolio README with real results (PR-AUC 0.23, Brier 0.205->0.058, threshold 0.16),
+  quickstart, architecture, structure, tests, deploy, caveats.
+- Committed model_v1 binaries (model.pkl ~1MB, calibrator, metrics.json) so the repo runs
+  on clone without retraining. Raw Olist CSVs stay gitignored.
+- Dockerfile (python:3.11-slim) runs the Streamlit dashboard; .dockerignore excludes venv,
+  raw data, tests. Deploy notes: HF Spaces / Streamlit Cloud + GEMINI_API_KEY secret; bundle
+  a sample dataset if the order picker is needed without raw CSVs.
+- 8 tests green.
+
 ## (add new decisions below as you build)

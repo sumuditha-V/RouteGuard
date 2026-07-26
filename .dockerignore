@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.git/
+.pytest_cache/
+notebooks/
+tests/
+*.sqlite
+*.db
+mlruns/
+# large raw data — see README deploy notes (bundle a sample if you need the picker)
+data/raw/
+data/interim/
+data/processed/
+data/external/
