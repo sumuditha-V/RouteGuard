@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# Data (large / not versioned) — keep folder, ignore contents
+data/raw/*
+data/interim/*
+data/processed/*
+data/external/*
+!data/**/.gitkeep
+
+# Models / artifacts
+models/registry/*
+models/artifacts/*
+!models/**/.gitkeep
+
+# Notebooks checkpoints
+.ipynb_checkpoints/
+
+# DB
+*.sqlite
+*.db
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Logs / experiment tracking
+*.log
+mlruns/

@@ -1,0 +1,37 @@
+# Core data / ML
+pandas
+numpy
+scikit-learn
+lightgbm
+
+# Tuning
+optuna
+
+# Explainability
+shap
+
+# Agent
+langgraph
+langchain-core
+anthropic
+
+# Serving
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+
+# Dashboard
+streamlit
+
+# Storage
+sqlalchemy
+
+# Config / utils
+pyyaml
+python-dotenv
+
+# Dev / test
+pytest
+pytest-cov
+ruff

@@ -1,0 +1,77 @@
+# RouteGuard configuration — all tunables live here, no magic numbers in code.
+
+paths:
+  raw_dir: data/raw
+  interim_dir: data/interim
+  processed_dir: data/processed
+  external_dir: data/external
+  model_registry: models/registry
+  artifacts: models/artifacts
+
+data:
+  # Target: late if actual delivery > estimated delivery
+  target_column: late_delivery
+  order_status_filter: delivered
+
+split:
+  # Time-based split — NOT random. Orders before this date = train, after = test.
+  # Set the exact cutoff after EDA (M1). Placeholder below.
+  strategy: time_based
+  time_column: order_purchase_timestamp
+  # Confirmed in EDA: ~80% of orders purchased before this date.
+  # Train = before 2018-06-01, Test = Jun/Jul/Aug 2018 (3-month future window).
+  train_cutoff_date: "2018-06-01"
+
+model:
+  # Shipped model: LightGBM only (baselines compared during M3).
+  primary: lightgbm
+  baselines: [logistic_regression, decision_tree, random_forest]
+  random_seed: 42
+  # Regularized LightGBM params (chosen in M3 to generalize under temporal shift;
+  # Optuna will refine these in M4).
+  lightgbm_params:
+    n_estimators: 300
+    learning_rate: 0.03
+    num_leaves: 15
+    max_depth: 4
+    min_child_samples: 200
+    subsample: 0.8
+    subsample_freq: 1
+    colsample_bytree: 0.8
+    reg_lambda: 5.0
+
+imbalance:
+  # Use scale_pos_weight (no SMOTE). Confirmed in EDA: late rate 8.11%.
+  method: scale_pos_weight
+  scale_pos_weight: 11.3   # n_negative / n_positive from EDA
+
+tuning:
+  optuna_trials: 50
+  cv_strategy: time_series   # NOT stratified k-fold
+  objective_metric: pr_auc
+
+backtest:
+  # Rolling-origin evaluation: train on all months before each test month.
+  # This is the PRIMARY (fair) evaluation - a single pooled holdout is misleading
+  # because monthly base rates drift a lot (see docs/NOTES.md, M3).
+  test_months: ["2017-11", "2017-12", "2018-01", "2018-02", "2018-03",
+                "2018-04", "2018-05", "2018-06", "2018-07", "2018-08"]
+
+evaluation:
+  primary_metric: pr_auc
+  # Business cost matrix for threshold selection (relative units).
+  cost_false_negative: 5   # missed late order = expensive
+  cost_false_positive: 1   # unnecessary intervention = cheaper
+
+agent:
+  llm_model: claude-sonnet-5
+  temperature: 0.2
+  max_critique_retries: 2
+  allowed_actions:
+    - upgrade_shipping
+    - change_warehouse
+    - choose_alternative_carrier   # illustrative — carrier data is not real (see DATA_CARD)
+    - prioritize_dispatch
+    - manual_review
+    - notify_customer
+    - no_action
