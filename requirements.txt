@@ -35,4 +35,5 @@ python-dotenv
 # Dev / test
 pytest
 pytest-cov
+httpx          # required by FastAPI TestClient
 ruff

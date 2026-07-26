@@ -52,6 +52,7 @@ def analyze_order(order_row: pd.DataFrame, llm=None, version: str = "model_v1") 
         "probability": round(proba, 4),
         "prediction": "late" if prediction else "on_time",
         "threshold": threshold,
+        "order": order_details,
         "shap_drivers": drivers,
         "agent": agent_final,
     }

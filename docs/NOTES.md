@@ -110,4 +110,14 @@ One line per decision. Future-you and reviewers read this. Newest at the bottom.
   the prompt for structured nodes. Anthropic path uses effort + output_config (unchanged).
 - Env var now `GEMINI_API_KEY`. All 7 tests still pass (FakeLLM, no key needed).
 
+## M8 — FastAPI service + SQLite
+- db.py: single `predictions` table (SQLAlchemy 2.0) with JSON columns; SQLite at project root,
+  swappable to Postgres via connection string. init_db/save/list/get helpers.
+- api.py: /health, /model/info, /metrics, /sample (real order to try), /predict (fast, no LLM),
+  /recommend (full pipeline + persist), /predictions, /predictions/{id}. Modern lifespan startup.
+- /sample serves real orders (high/low/random risk) so the dashboard can demo without hand-typing
+  20 features. /predict works without an API key; /recommend needs GEMINI_API_KEY.
+- test_api.py: TestClient smoke test (health, model info, metrics, sample->predict) — no key needed.
+- Run: `PYTHONPATH=src uvicorn routeguard.api:app --reload` ; docs at /docs.
+
 ## (add new decisions below as you build)
