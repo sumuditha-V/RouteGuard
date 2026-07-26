@@ -76,4 +76,15 @@ One line per decision. Future-you and reviewers read this. Newest at the bottom.
   threshold, saved to models/registry/model_v1/ (model.pkl, calibrator.pkl, metrics.json).
   Regenerate with `python -m routeguard.evaluation`. Binaries gitignored; metrics.json tracked.
 
+## M6 — SHAP explainability
+- registry.py: single loader for model_v1 (model + calibrator + meta), lru_cached;
+  predict_proba() helper returns calibrated probability.
+- explainability.py: TreeExplainer on the raw LightGBM. global_importance() (mean|SHAP|)
+  and explain_order() returning STRUCTURED drivers (feature, value, shap, direction).
+- Explains the RAW model (calibration is monotonic, doesn't change feature ranking/direction).
+- Top global drivers: delivery_window_days, purchase_month, cust_state/seller hist late rates,
+  distance. Sensible + business-interpretable (tight window = #1 risk factor).
+- Structured output is the contract feeding the M7 agent (read-only facts) and the dashboard
+  (waterfall/force plots).
+
 ## (add new decisions below as you build)
