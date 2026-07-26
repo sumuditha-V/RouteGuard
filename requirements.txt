@@ -13,7 +13,8 @@ shap
 # Agent
 langgraph
 langchain-core
-anthropic
+google-genai       # Gemini (active provider)
+anthropic          # kept: provider is swappable via config
 
 # Serving
 fastapi

@@ -42,15 +42,51 @@ class LLM(Protocol):
     def complete_json(self, system: str, user: str, schema: dict) -> dict: ...
 
 
+class GeminiLLM:
+    """Active provider. Reads GEMINI_API_KEY from the environment (.env)."""
+
+    def __init__(self):
+        from google import genai
+
+        cfg = load_config()["agent"]
+        self.genai = genai
+        self.client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+        self.model = cfg["gemini_model"]
+        self.temperature = cfg["temperature"]
+        self.max_tokens = cfg["max_tokens"]
+
+    def _config(self, system: str, json_mode: bool):
+        from google.genai import types
+
+        return types.GenerateContentConfig(
+            system_instruction=system,
+            temperature=self.temperature,
+            max_output_tokens=self.max_tokens,
+            response_mime_type="application/json" if json_mode else "text/plain",
+        )
+
+    def complete_text(self, system: str, user: str) -> str:
+        resp = self.client.models.generate_content(
+            model=self.model, contents=user, config=self._config(system, False))
+        return resp.text
+
+    def complete_json(self, system: str, user: str, schema: dict) -> dict:
+        # embed the schema in the prompt so the reply matches the required shape
+        prompt = f"{user}\n\nReturn ONLY JSON matching this schema:\n{json.dumps(schema)}"
+        resp = self.client.models.generate_content(
+            model=self.model, contents=prompt, config=self._config(system, True))
+        return json.loads(resp.text)
+
+
 class AnthropicLLM:
-    """Real client. Reads ANTHROPIC_API_KEY from the environment (.env)."""
+    """Alternative provider. Reads ANTHROPIC_API_KEY. Used when agent.provider=anthropic."""
 
     def __init__(self):
         from anthropic import Anthropic
 
         cfg = load_config()["agent"]
         self.client = Anthropic()
-        self.model = cfg["llm_model"]
+        self.model = cfg["anthropic_model"]
         self.effort = cfg["effort"]
         self.max_tokens = cfg["max_tokens"]
 
@@ -73,6 +109,12 @@ class AnthropicLLM:
                            "format": {"type": "json_schema", "schema": schema}},
         )
         return json.loads(self._text(resp))
+
+
+def get_llm() -> LLM:
+    """Return the LLM client for the configured provider (agent.provider)."""
+    provider = load_config()["agent"]["provider"]
+    return GeminiLLM() if provider == "gemini" else AnthropicLLM()
 
 
 def _prompt(name: str) -> str:
@@ -225,6 +267,6 @@ def build_agent(llm: LLM):
 
 def run_agent(state: AgentState, llm: LLM = None) -> dict:
     """Convenience: build + invoke, returning the final response dict."""
-    llm = llm or AnthropicLLM()
+    llm = llm or get_llm()
     result = build_agent(llm).invoke(state)
     return result["final"]

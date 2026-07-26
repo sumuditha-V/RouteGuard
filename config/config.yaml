@@ -67,9 +67,11 @@ evaluation:
   cost_false_positive: 1   # unnecessary intervention = cheaper
 
 agent:
-  llm_model: claude-sonnet-5
-  # NOTE: Sonnet 5 rejects temperature/top_p (400). Control depth with effort instead.
-  effort: low          # fast, cheap; this agent explains, it doesn't do deep reasoning
+  provider: gemini             # gemini | anthropic  (LLM client is swappable)
+  gemini_model: gemini-2.5-flash
+  anthropic_model: claude-sonnet-5
+  temperature: 0.2             # gemini only (Anthropic Sonnet 5 rejects temperature)
+  effort: low                  # anthropic only
   max_tokens: 1024
   max_critique_retries: 2
   allowed_actions:

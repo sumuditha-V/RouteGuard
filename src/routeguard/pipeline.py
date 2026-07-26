@@ -67,7 +67,7 @@ def _clean(v):
 
 if __name__ == "__main__":
     # Demo: pick a high-risk recent order and run the whole pipeline.
-    # predict + SHAP work with no API key; the agent step needs ANTHROPIC_API_KEY.
+    # predict + SHAP work with no API key; the agent step needs GEMINI_API_KEY.
     from .data import build_dataset
     from .features import build_features
 
@@ -81,6 +81,6 @@ if __name__ == "__main__":
         import json
         print(json.dumps(result, indent=2, default=str))
     except Exception as e:
-        # most likely a missing/invalid ANTHROPIC_API_KEY
+        # most likely a missing/invalid GEMINI_API_KEY
         print(f"Agent step failed ({type(e).__name__}: {e}).")
-        print("Add your key to .env (ANTHROPIC_API_KEY=...) to run the agent.")
+        print("Add your key to .env (GEMINI_API_KEY=...) to run the agent.")

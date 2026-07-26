@@ -102,4 +102,12 @@ One line per decision. Future-you and reviewers read this. Newest at the bottom.
   valid recommendation approved). Second headline correctness guarantee.
 - Prompts versioned in prompts/ (explanation.md, recommendation.md).
 
+## Provider switch — Gemini
+- Agent LLM switched from Claude to **Google Gemini** (`gemini-2.5-flash`) via `google-genai`.
+- Clean swap thanks to the injected LLM Protocol: added `GeminiLLM`, kept `AnthropicLLM`,
+  added `get_llm()` factory driven by `agent.provider` in config (gemini | anthropic).
+- Gemini uses temperature (0.2) + `response_mime_type=application/json`; schema embedded in
+  the prompt for structured nodes. Anthropic path uses effort + output_config (unchanged).
+- Env var now `GEMINI_API_KEY`. All 7 tests still pass (FakeLLM, no key needed).
+
 ## (add new decisions below as you build)
