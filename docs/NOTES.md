@@ -55,4 +55,12 @@ One line per decision. Future-you and reviewers read this. Newest at the bottom.
 - **Calibration (M5) is now known to be important** — cross-month probability drift is exactly
   what calibration fixes, and it's what makes the LLM's stated "% chance" trustworthy.
 
+## M4 — Optuna tuning
+- 50 trials, TPE sampler + MedianPruner, scored on the rolling backtest (same metric we report).
+- Features built once and folds cached for speed; each trial only refits LightGBM.
+- **Result: PR-AUC 0.227 -> 0.229 (marginal ~1% gain).** Honest takeaway: the M3 regularized
+  params were already near-optimal; the performance ceiling here is data non-stationarity,
+  not hyperparameters. Adopted tuned params anyway (config `lightgbm_params`).
+- Full-precision best params saved to models/artifacts/best_lgbm_params.json (gitignored).
+
 ## (add new decisions below as you build)
