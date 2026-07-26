@@ -63,4 +63,17 @@ One line per decision. Future-you and reviewers read this. Newest at the bottom.
   not hyperparameters. Adopted tuned params anyway (config `lightgbm_params`).
 - Full-precision best params saved to models/artifacts/best_lgbm_params.json (gitignored).
 
+## M5 — Threshold, calibration & final model
+- **Calibration is a big win:** isotonic calibration cut Brier score 0.205 -> 0.058 on held-out
+  eval months. Raw scale_pos_weight probabilities are distorted; calibration makes "0.78" mean
+  ~78% (needed for the M7 LLM to state trustworthy percentages).
+- **Cost-based threshold = 0.16-0.17** (FN costs 5x, FP costs 1x). Transforms usefulness:
+  naive 0.50 catches ~2% of late orders; cost-optimal ~0.17 catches ~35% (15x more caught),
+  accepting cheaper false alarms. This is the core "score -> real decision" story.
+- Honest eval design: OOS predictions from rolling backtest, then time-split OOS into
+  dev (fit calibrator + threshold) and eval (report) so nothing is fit on the eval months.
+- **Shipped artifact model_v1** = LightGBM retrained on all data + isotonic calibrator +
+  threshold, saved to models/registry/model_v1/ (model.pkl, calibrator.pkl, metrics.json).
+  Regenerate with `python -m routeguard.evaluation`. Binaries gitignored; metrics.json tracked.
+
 ## (add new decisions below as you build)

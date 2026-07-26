@@ -1,0 +1,71 @@
+{
+  "version": "model_v1",
+  "created_utc": "2026-07-26T09:40:24.476248+00:00",
+  "model": "lightgbm",
+  "features": [
+    "distance_km",
+    "same_state",
+    "delivery_window_days",
+    "freight_ratio",
+    "total_freight",
+    "total_price",
+    "n_items",
+    "n_sellers",
+    "max_weight_g",
+    "purchase_dow",
+    "purchase_month",
+    "purchase_hour",
+    "is_weekend",
+    "is_holiday_season",
+    "seller_hist_late_rate",
+    "seller_hist_count",
+    "cust_state_hist_late_rate",
+    "cust_state_hist_count",
+    "category_hist_late_rate",
+    "category_hist_count"
+  ],
+  "threshold": 0.16,
+  "eval_metrics": {
+    "pr_auc": 0.1329,
+    "roc_auc": 0.7016,
+    "precision": 0.1384,
+    "recall": 0.3456,
+    "f1": 0.1976,
+    "confusion_matrix": {
+      "tn": 26048,
+      "fp": 4166,
+      "fn": 1267,
+      "tp": 669
+    }
+  },
+  "brier_raw": 0.2048,
+  "brier_calibrated": 0.0579,
+  "reliability_curve": {
+    "mean_predicted": [
+      0.014497223233877473,
+      0.04166266876297271,
+      0.05676759003477453,
+      0.08052008406188317,
+      0.08865575956403307,
+      0.09688793984936254,
+      0.11279423427416807,
+      0.13708685281907462,
+      0.18892953518563177,
+      0.2829637900772742
+    ],
+    "observed": [
+      0.013139885026006022,
+      0.023715415019762844,
+      0.0341331530922609,
+      0.03459799488893257,
+      0.043930089749645726,
+      0.04653154439052241,
+      0.06658343736995423,
+      0.0972634355423673,
+      0.10764790764790765,
+      0.1572218382861092
+    ]
+  },
+  "cost_fn": 5,
+  "cost_fp": 1
+}
