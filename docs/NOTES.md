@@ -87,4 +87,19 @@ One line per decision. Future-you and reviewers read this. Newest at the bottom.
 - Structured output is the contract feeding the M7 agent (read-only facts) and the dashboard
   (waterfall/force plots).
 
+## M7 — LangGraph dispatch agent
+- Graph: coordinator -> explanation -> recommendation -> critique -> (retry | finalize).
+- **The LLM never predicts** — probability/prediction/SHAP are read-only facts in the prompt;
+  prompts forbid restating/recalculating the probability.
+- **Critique is DETERMINISTIC code, not an LLM** (design choice): the LLM proposes, code
+  validates against SHAP. Rejects if action out of allowed set, no_action on a predicted-late
+  order, or justifying_feature isn't a real risk driver / doesn't justify the action.
+  ACTION_REQUIREMENTS maps action -> justifying features.
+- LLM client is injected (Protocol) so tests use a FakeLLM — no API key needed for tests.
+- Model: claude-sonnet-5, effort=low (Sonnet 5 rejects temperature -> 400). Structured output
+  via output_config json_schema. Loads ANTHROPIC_API_KEY from .env (dotenv).
+- **4 guardrail tests pass** (contradicting-SHAP, wrong-feature, no_action-on-late all rejected;
+  valid recommendation approved). Second headline correctness guarantee.
+- Prompts versioned in prompts/ (explanation.md, recommendation.md).
+
 ## (add new decisions below as you build)

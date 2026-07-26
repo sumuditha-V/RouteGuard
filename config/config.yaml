@@ -68,7 +68,9 @@ evaluation:
 
 agent:
   llm_model: claude-sonnet-5
-  temperature: 0.2
+  # NOTE: Sonnet 5 rejects temperature/top_p (400). Control depth with effort instead.
+  effort: low          # fast, cheap; this agent explains, it doesn't do deep reasoning
+  max_tokens: 1024
   max_critique_retries: 2
   allowed_actions:
     - upgrade_shipping
